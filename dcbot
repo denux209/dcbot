@@ -1,13 +1,15 @@
 import discord
 from discord.ext import commands
-import random
+import random,os,requests,time
+
+x=0
+for i in range(100000):
+    x+=i
+
+print('Job took: ', endtime-starttime)
 intents = discord.Intents.default()
 intents.message_content = True
-r = random.randint(1,2)
-if r == 1:
-    r = "yazi"
-elif r == 2:
-    r = "tura"
+bilmiom = []
 bot = commands.Bot(command_prefix='$', intents=intents)
 @bot.event
 async def on_ready():
@@ -19,16 +21,90 @@ async def hello(ctx):
 
 @bot.command()
 async def yazitura(ctx, secim):
+    r = random.randint(1,2)
+    if r == 1:
+        r = "yazi"
+    elif r == 2:
+        r = "tura"
     secim.lower()
     if secim == r:
         await ctx.send(f"Seçiminiz doğru")
+    else:
+        await ctx.send(f"Seçiminiz yanlış")
 
-@bot.command()
-async def joined(ctx, member: discord.Member):
-    """Says when a member joined."""
-    await ctx.send(f'{member.name} joined {discord.utils.format_dt(member.joined_at)}')
 @bot.command()
 async def heh(ctx, count_heh = 5):
     await ctx.send("he" * count_heh)
 
+@bot.command()
+async def resim(ctx):
+    r = random.randint(0,100)
+    if r <= 50:
+        with open(f"kodland_resim/{"M2L1-T2-1_tlaheo.png"}")as f:
+            picture = discord.File(f)
+    elif r <= 80 and r > 50:
+        with open(f"kodland_resim/{"M2L1-T2-3_ue9vog.png"}")as f:
+            picture = discord.File(f)
+    elif r <= 100 and r > 80:
+        with open(f"kodland_resim/{"M2L1-T2-2_ksnyah.png"}")as f:
+            picture = discord.File(f)
+    
+    # resimm = random.choice(os.listdir("kodland_resim"))
+    # with open(f'kodland_resim/{resimm}', 'rb') as f:
+    await ctx.send(file=picture)
+def get_duck_image_url():    
+    url = 'https://random-d.uk/api/random'
+    res = requests.get(url)
+    data = res.json()
+    return data['url']
+
+@bot.command('duck')
+async def duck(ctx):
+    '''duck komutunu çağırdığımızda, program ordek_resmi_urlsi_al fonksiyonunu çağırır.'''
+    image_url = get_duck_image_url()
+    await ctx.send(image_url)
+@bot.command()    
+async def tilki(ctx):
+        url = "https://randomfox.ca/floof/"
+        res = requests.get(url)
+        data = res.json()
+        a = data['image']
+        await ctx.send(a)
+@bot.command()
+async def resimm(ctx):
+    url = "https://pokeapi.co/api/v2/pokemon/153"
+    res = requests.get(url)
+    data = res.json()
+    a = data["sprites"]
+    await ctx.send(a)
+@bot.command()
+async def sayi_tahmin(ctx):
+    r = random.randint(0,100)
+    tahmin_hakki= 5
+    while kullanici_tahmini != r:
+        tahmin_mesaji = await bot.wait_for("message", check=lambda m: m.author == ctx.author)
+        kullanici_tahmini = tahmin_mesaji.content
+        tahmin_hakki -= 1
+        if int(kullanici_tahmini) == r:
+            await ctx.send("helal")
+        elif int(kullanici_tahmini) < r:
+            await ctx.send("büyüt")
+        elif int(kullanici_tahmini) > r:
+            await ctx.send("küçült")
+@bot.command()
+async def wasd(ctx, count = 10):
+    bilmiom.append("x")
+    bilmiom.append("y")
+    bilmiom.append("z")
+    r = random.choice(bilmiom)
+    await ctx.send(r * count)
+@bot.command()
+async def stopwatch(ctx):
+    tahmin_mesaji = await bot.wait_for("message", check=lambda m: m.author == ctx.author)
+    kullanici_tahmini = tahmin_mesaji.content
+    if kullanici_tahmini == "start":
+        starttime = time.time()
+    if kullanici_tahmini == "stop":
+        endtime = time.time()
+        await ctx.send
 bot.run("TOKEN")
